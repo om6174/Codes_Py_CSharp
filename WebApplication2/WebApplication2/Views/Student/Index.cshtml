@@ -1,0 +1,167 @@
+﻿@model List<WebApplication2.Models.StudentModel>
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+@section styles{
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+}
+
+<h1>Student List</h1>
+<div class="row align-self-end">
+    <div class="col-6 border-dark">
+        <table class="table table-striped table-dark">
+            <thead>
+                <tr>
+                    <th class="col-4">Name</th>
+                    <th class="col-2">Roll Number</th>
+                    <th class="col-2">Age</th>
+                    <th class="col-3">Gender</th>
+                </tr>
+            </thead>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.RollNumber</td>
+                    <td>@item.Age</td>
+                    <td>@item.Gender</td>
+                </tr>
+            }
+        </table>
+    </div>
+
+    <div class="col-5 border border-dark align-self-start">
+        @Html.ValidationMessage("Error")<br />
+        <div>
+            <h2 style="display:inline-block">Add or Update Student</h2><span>(Add student with a new roll number, Update student with an existing roll number )</span>
+            @using (Html.BeginForm("Index", "Student", FormMethod.Post))
+            {
+                WebApplication2.Models.StudentModel student = new WebApplication2.Models.StudentModel();
+                <div class="form-group row">
+                    <div class="col-6">
+                        <label asp-for="@student.Name">Name</label>
+                        <input type="text" asp-for="@student.Name" name="Name" class="input-group" maxlength="60" />
+                    </div>
+                    <div class="col-4">
+                        <label asp-for="@student.RollNumber">Roll Number</label>
+                        <input type="number" asp-for="@student.RollNumber" name="RollNumber" class="input-group" min="0" maxlength="5" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="@student.Age">Age</label>
+                        <input type="number" asp-for="@student.Age" name="Age" class="input-group" min="0" max="122" />
+                    </div>
+                    <div class="col-4">
+                        <label asp-for="@student.Gender">Gender</label>
+                        <select asp-for="@student.Gender" name="Gender" class="dropdown input-group">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                        @*<input type="text" asp-for="@student.Gender" name="Gender" class="input-group" maxlength="6" placeholder="Male/Female" />*@
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Add/Update</button>
+            }
+        </div>
+        <br />
+
+        <h2 style="display: inline-block">Search</h2><span>(If both Name and Number are specified, show records meeting atleast one criteria)</span>
+        @using (Html.BeginForm("SearchAct", "Student", FormMethod.Post))
+        {
+            <div class="input-group m-2">
+                <label class="col-form-label mr-4">Roll Number:</label>
+                <input type="number" min="1" id="numToFind" name="numToFind" value = @if (ViewBag.SearchKey != null && ViewBag.SearchKey != 0) { @ViewBag.SearchKey}>
+
+</div>
+
+<div class="input-group m-2">
+                <label class="col-form-label mr-4">Name:</label>
+                <input type="text" maxlength="100" id="nameToFind" name="nameToFind" value="@ViewBag.SearchName">
+            </div>
+            <input type="submit" id="submitId" value="Search" class="btn btn-success ml-4" />
+
+
+        }
+
+        @{
+            if (ViewBag.SearchKey != null || ViewBag.SearchName != null)
+            {
+
+                List<WebApplication2.Models.StudentModel> studentModel = new List<WebApplication2.Models.StudentModel>();
+                if (ViewBag.SearchKey != null)
+                {
+                    studentModel.Add(Model.FirstOrDefault(x => x.RollNumber == @ViewBag.SearchKey));
+                    studentModel = studentModel.Where(d => d != null).ToList();
+                }
+                if (!String.IsNullOrWhiteSpace(ViewBag.SearchName))
+                {
+                    studentModel = studentModel.Concat(Model.FindAll(x => x.Name.ToLower().Contains(@ViewBag.SearchName.ToLower()))).Distinct().ToList();
+                }
+                if (studentModel.Any())
+                {
+                    <div class="container mt-1">
+                                <table class="table table-striped table-dark">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Roll Number</th>
+                                            <th>Age</th>
+                                            <th>Gender</th>
+                                        </tr>
+                                    </thead>
+                                    @foreach (var item in studentModel)
+                                    {
+                                        <tr>
+                                            <td>@item.Name</td>
+                                            <td>@item.RollNumber</td>
+                                            <td>@item.Age</td>
+                                            <td>@item.Gender</td>
+                                        </tr>
+                                    }
+                                    </table>
+                    </div> }
+                else
+                {
+                    <p class="text-danger">Enter valid Roll Number or Name</p>
+                }
+
+            }
+        }
+        <br />
+        <h1>Delete Student</h1>
+        @using (Html.BeginForm("Delete", "Student", FormMethod.Post))
+        {
+            WebApplication2.Models.StudentModel student = new WebApplication2.Models.StudentModel();
+            <div class="input-group m-2">
+
+                <label asp-for="@student.RollNumber" class="col-form-label mr-4">Roll Number:</label>
+                <input type="number" asp-for="@student.RollNumber" name="RollNumber" min="1" />
+                <button type="submit" name="submit" class="btn btn-outline-danger ml-3">Delete</button>
+
+
+            </div>
+            <span class="text-danger">@Html.ValidationMessage("Delete")<br /></span>
+        }
+
+    </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
