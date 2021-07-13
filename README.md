@@ -11,4 +11,9 @@ Version 16.10.3
 Microsoft.AspNetCore.App\3.1.16
 
 
+data.json is the storage file for the Web App in C#
+Live data located in Codes_Py_CSharp\WebApplication2\WebApplication2\wwwroot\data
+
+
+
 
