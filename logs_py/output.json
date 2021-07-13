@@ -1,0 +1,12 @@
+[
+    {
+        "Date": "2015-05-22 16:48:48,180",
+        "Type": "ERROR",
+        "Message": "Failed: Waiting for files the Files from Cloud Storage: gs://folder/folder/\n"
+    },
+    {
+        "Date": "2015-05-22 16:48:48,180",
+        "Type": "WARNING",
+        "Message": "Starting: Attempt 2 Checking for New Files from gs://folder/folder/\n"
+    }
+]
